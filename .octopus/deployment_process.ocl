@@ -3,7 +3,13 @@ step "Print GitRef" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.Script.ScriptBody = "write-host $OctopusParameters[\"Octopus.Release.Git.Ref\"]"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                write-host "Start Ref"
+                $OctopusParameters["Octopus.Release.Git.Ref"]
+                $OctopusParameters["Octopus.Release.Git.CommitHash"]
+                $OctopusParameters["Octopus.Release.Git.BranchName"]
+                write-host "End Ref"
+            EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
             OctopusUseBundledTooling = "False"
