@@ -1,0 +1,24 @@
+step "Print GitRef" {
+
+    action {
+        action_type = "Octopus.Script"
+        properties = {
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                #{each package in Octopus.Release.Package}
+                #{each commit in package.Commits}
+                - [#{commit.CommitId}](#{commit.LinkUrl}) - #{commit.Comment}
+                #{/each}
+                #{/each}
+            EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+            OctopusUseBundledTooling = "False"
+        }
+        worker_pool = "Default Worker Pool (Windows)"
+
+        container {
+            feed = "Docker Default"
+            image = "octopusdeploy/worker-tools:3.3.2-windows.ltsc2019"
+        }
+    }
+}
